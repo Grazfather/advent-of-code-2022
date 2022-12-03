@@ -1,38 +1,6 @@
 const std = @import("std");
 const print = std.debug.print;
-
-fn charToDigit(c: u8) u8 {
-    return switch (c) {
-        '0' ... '9' => c - '0',
-        'A' ... 'Z' => c - 'A' + 10,
-        'a' ... 'z' => c - 'a' + 10,
-        else => std.math.maxInt(u8),
-    };
-}
-
-pub fn parseU64(buf: []const u8, radix: u8) !u64 {
-    var x: u64 = 0;
-
-    for (buf) |c| {
-        const digit = charToDigit(c);
-
-        if (digit >= radix) {
-            return error.InvalidChar;
-        }
-
-        // x *= radix
-        if (@mulWithOverflow(u64, x, radix, &x)) {
-            return error.Overflow;
-        }
-
-        // x += digit
-        if (@addWithOverflow(u64, x, digit, &x)) {
-            return error.Overflow;
-        }
-    }
-
-    return x;
-}
+const parseUnsigned = std.fmt.parseUnsigned;
 
 fn greaterThan(context: void, a: u64, b: u64) std.math.Order {
     _ = context;
@@ -55,8 +23,9 @@ pub fn main() !void {
 		if (line.len == 0) {
 			try elves.add(vi);
 			vi = 0;
+			continue;
 		}
-		var v = try parseU64(line, 10);
+		var v = try parseUnsigned(u64, line, 10);
 		vi += v;
 	}
 

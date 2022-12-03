@@ -12,6 +12,5 @@ for line in lines:
     else:
         v += int(line)
 
-print(heapq.nlargest(1, elves))
-print(heapq.nsmallest(1, elves))
+print(sum(heapq.nlargest(1, elves)))
 print(sum(heapq.nlargest(3, elves)))
